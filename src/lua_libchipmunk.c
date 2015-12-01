@@ -149,6 +149,18 @@ _body_local_to_world_vector(lua_State *L) {
 }
 
 static int
+_body_local_to_world_point(lua_State *L) {
+    cpBody *body = (cpBody *)lua_touserdata(L, 1);
+    if (body == NULL)
+		return luaL_error(L, "Invalid param body");
+    cpVect point = cpv(luaL_checknumber(L,2),luaL_checknumber(L,3));
+    point = cpBodyLocalToWorld(body, point);
+    lua_pushnumber(L, point.x);
+    lua_pushnumber(L, point.y);
+    return 2;
+}
+
+static int
 _body_get_position(lua_State *L) {
     cpBody *body = (cpBody *)lua_touserdata(L, 1);
     if (body == NULL)
@@ -383,6 +395,7 @@ luaopen_libchipmunk(lua_State *L) {
         {"body_new_kinematic", _body_new_kinematic},
         {"body_new_static", _body_new_static},
         {"body_local_to_world_vector", _body_local_to_world_vector},
+        {"body_local_to_world_point", _body_local_to_world_point},
         {"body_get_position", _body_get_position},
         {"body_set_position", _body_set_position},
         {"space_reindex_shapes_for_body", _space_reindex_shapes_for_body},
